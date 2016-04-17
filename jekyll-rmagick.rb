@@ -29,88 +29,84 @@ require 'fileutils'
 
 include Magick
 
-module ImageGen
+module Jekyll
 
-    # Workaround - We need Jekyll to not mess with our files.
-    # we write them directly during the Generator phase, and when it tries to
-    # write them itself, they noop.
-    class ImageFile < Jekyll::StaticFile
-        def write(dest)
-            # do nothing
-        end
-    end
+    module ImageGen
 
-    class Generator < Jekyll::Generator
-
-        $pathformat = "%{filename}-%{size}.%{extension}"
-
-        $sizes = [
-            {
-                'meta' => 'image_large',
-                'size' => 'md',
-                'width' => 1280,
-                'height' => 800,
-            },
-            {
-                'meta' => 'image',
-                'size' => 'sm',
-                'width' => 640,
-                'height' => 320,
-            }
-        ]
-
-        def symbolize_keys(hash)
-            result = {}
-            hash.each_key do |key|
-                result[key.to_sym] = hash[key]
+        # Workaround - We need Jekyll to not mess with our files.
+        # we write them directly during the Generator phase, and when it tries to
+        # write them itself, they noop.
+        class ImageFile < Jekyll::StaticFile
+            def write(dest)
+                # do nothing
             end
-            result
         end
 
-        def format_output_path(dest, image_path, size)
-            params = symbolize_keys(image_hash(image_path, size))
-            Pathname.new(dest % params).to_s
-        end
+        class Generator < Jekyll::Generator
 
-        def image_hash(image_path, size)
-            {
-              'path'      => image_path,
-              'basename'  => File.basename(image_path),
-              'filename'  => File.basename(image_path, '.*'),
-              'extension' => File.extname(image_path).delete('.'),
-              'size'      => size,
-            }
-        end
+            $pathformat = "%{filename}-%{size}.%{extension}"
 
-        def generate(site)
+            def symbolize_keys(hash)
+                result = {}
+                hash.each_key do |key|
+                    result[key.to_sym] = hash[key]
+                end
+                result
+            end
 
-            dest = site.config['destination'] + "/assets/"
-            src = site.config['source'] + "/_img/"
+            def format_output_path(dest, image_path, size)
+                params = symbolize_keys(image_hash(image_path, size))
+                Pathname.new(dest % params).to_s
+            end
 
-            FileUtils::mkdir_p dest # directory needs to exist or IM won't put images there.
+            def image_hash(image_path, size)
+                {
+                  'path'      => image_path,
+                  'basename'  => File.basename(image_path),
+                  'filename'  => File.basename(image_path, '.*'),
+                  'extension' => File.extname(image_path).delete('.'),
+                  'size'      => size,
+                }
+            end
 
-            site.posts.each do |post|
-                if post.data['img_src']
+            def generate(site)
 
-                    source_file = src + post.data['img_src']
-                    image = ImageList.new(source_file)
-                    image.strip!
+                dest = site.config['destination'] + "/assets/"
+                src = site.config['source'] + "/" + site.config['jekyll-rmagick']['source_dir'] + "/"
 
-                    $sizes.each do |spec|
+                prefix = site.config['jekyll-rmagick']['prefix']
+                sizes = site.config['jekyll-rmagick']['spec']
+                FileUtils::mkdir_p dest # directory needs to exist or IM won't put images there.
 
-                        filename = format_output_path($pathformat, source_file, spec['size'])
-                        output_file = dest + filename
-                        rel_path = '/assets/' + filename
-                        image.resize(spec['width'],spec['height']).modulate(0.5).write(output_file) { self.quality = 75 }
-                        site.static_files << ImageFile.new(site, site.source, '/assets', filename)
-                        post.data[spec['meta']] = '/assets/' + filename
+                site.posts.each do |post|
+                    if post.data['img_src']
+
+                        source_file = src + post.data['img_src']
+                        image = ImageList.new(source_file)
+                        image.strip!
+
+                        sizes.each do |spec|
+
+                            filename = format_output_path($pathformat, source_file, spec['meta'])
+                            output_file = dest + filename
+                            rel_path = '/assets/' + filename
+                            image = image.resize(spec['width'],spec['height'])
+
+                            if site.config['jekyll-rmagick']['brightness_mod']
+                                image = image.modulate(site.config['jekyll-rmagick']['brightness_mod'])
+                            end
+
+                            image.write(output_file) { self.quality = 75 }
+                            site.static_files << ImageFile.new(site, site.source, '/assets', filename)
+                            post.data[prefix + "-" + spec['meta']] = '/assets/' + filename
+
+                        end
 
                     end
-
                 end
             end
+
         end
 
     end
-
 end
