@@ -2,7 +2,9 @@
 
 A tiny Jekyll plugin to process images using [RMagick](https://rmagick.github.io/)'s ImageMagick bindings.
 
-I made this for my personal blog since I grew tired of manually processing images for the sizes I need.
+I made this for my personal blog after I grew tired of manually processing images for the sizes I need. I use this to associate a header image with each post, which is then displayed in different sizes on the index and post pages. This way the source repository need only contain one large master image, and it automates the creation of posts.
+
+This is not a tool for complex image processing or inclusion within the body of a post.
 
 ### Installation
 Install [ImageMagick](https://www.imagemagick.org) for your platform.
@@ -51,5 +53,4 @@ img_src: filename.jpg
 - If the image you specified doesn't exist, it will crash. If the image you specified isn't an image, it will crash. If you try to break it, it will crash.
 
 ### TODO
-- Parse target image types from configuration instead of hard-coding
 - Error Handling
