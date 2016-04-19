@@ -11,7 +11,6 @@ Install [ImageMagick](https://www.imagemagick.org) for your platform.
 ```
 gem install rmagick
 cp jekyll-rmagick.rb YOUR_JEKYLL_DIR/_plugins
-mkdir YOUR_JEKYLL_DIR/_img
 ```
 
 ### Configuration
@@ -33,6 +32,7 @@ jekyll-rmagick:
 Each generated image will be made available in the post data under the key `[prefix]-[meta]` according to configuration.
 
 #### Extra Options
+Place these under the `jekyll-rmagick` header in config.
 | option | value | desc |
 |--------|-------|------|
 | brightness-mod|0.0-1.0| decrease brightness of images (useful for overlaying text)|
