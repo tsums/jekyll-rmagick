@@ -33,6 +33,7 @@ Each generated image will be made available in the post data under the key `[pre
 
 #### Extra Options
 Place these under the `jekyll-rmagick` header in config.
+
 | option | value | desc |
 |--------|-------|------|
 | brightness-mod|0.0-1.0| decrease brightness of images (useful for overlaying text)|
