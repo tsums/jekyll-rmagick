@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jekyll-rmagick (0.1.0)
+    jekyll-rmagick (0.1.2)
       jekyll (~> 4.0)
       observer
       rmagick (~> 4.0)
