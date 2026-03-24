@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "jekyll-rmagick"
-  spec.version       = "0.1.0"
+  spec.version       = "0.1.1"
   spec.authors       = ["Trevor Summerfield"]
   spec.email         = ["trevor@trevorsummerfield.com"] # Placeholder as it's not in the files
 
