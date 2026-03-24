@@ -82,21 +82,23 @@ module Jekyll
                     if post.data['img_src']
 
                         source_file = src + post.data['img_src']
-                        image = ImageList.new(source_file)
-                        image.strip!
+                        original = ImageList.new(source_file)
+                        original.strip!
 
                         sizes.each do |spec|
 
                             filename = format_output_path($pathformat, source_file, spec['meta'])
                             output_file = dest + filename
                             rel_path = '/assets/' + filename
-                            image = image.resize(spec['width'],spec['height'])
+                            image = original.copy
+                            image.resize!(spec['width'], spec['height'])
 
-                            if site.config['jekyll-rmagick']['brightness_mod']
-                                image = image.modulate(site.config['jekyll-rmagick']['brightness_mod'])
+                            if site.config['jekyll-rmagick']['brightness-mod']
+                                image.modulate!(site.config['jekyll-rmagick']['brightness-mod'])
                             end
 
-                            image.write(output_file) { self.quality = 75 }
+                            image.write(output_file) { self.quality = site.config['jekyll-rmagick']['quality'] || 75 }
+                            image.destroy!
                             site.static_files << ImageFile.new(site, site.source, '/assets', filename)
                             post.data[prefix + "-" + spec['meta']] = '/assets/' + filename
 
