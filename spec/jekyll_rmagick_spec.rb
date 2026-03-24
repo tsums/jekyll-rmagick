@@ -311,7 +311,7 @@ describe "Jekyll RMagick Plugin" do
             "spec"       => [
               { "meta" => "sm", "width" => 640, "height" => 320 }
             ],
-            "brightness-mod" => 0.0
+            "brightness-mod" => 0.01
           }
         }
       end

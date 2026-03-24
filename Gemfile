@@ -9,4 +9,4 @@ group :development, :test do
 end
 
 # RMagick is required for the plugin but not for basic config tests
-# gem "rmagick"
+gem "rmagick"

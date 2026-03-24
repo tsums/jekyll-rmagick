@@ -117,13 +117,13 @@ module Jekyll
                                 image.resize!(spec['width'], spec['height'])
 
                                 # Apply brightness modulation if configured and valid
-                                if jekyll_rmagick_config['brightness-mod'] && jekyll_rmagick_config['brightness-mod'].is_a?(Numeric) && (0.0..1.0).include?(jekyll_rmagick_config['brightness-mod'])
+                                if jekyll_rmagick_config['brightness-mod'] && jekyll_rmagick_config['brightness-mod'].is_a?(Numeric) && (jekyll_rmagick_config['brightness-mod'] > 0.0 && jekyll_rmagick_config['brightness-mod'] <= 1.0)
                                     image[0] = image[0].modulate(jekyll_rmagick_config['brightness-mod'], 1.0, 1.0) if image.length > 0
                                 end
 
                                 # Write image with specified quality
                                 quality = jekyll_rmagick_config['quality'] || 100
-                                image.write(output_file) { self.quality = quality }
+                                image.write(output_file) { |info| info.quality = quality }
 
                                 # Clean up image resources
                                 image.destroy!

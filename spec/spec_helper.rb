@@ -4,9 +4,6 @@ require "jekyll"
 require "rspec"
 require "pathname"
 
-# Add the mock rmagick to the load path
-$LOAD_PATH.unshift(File.expand_path("support", __dir__))
-
 require File.expand_path("../jekyll-rmagick.rb", __dir__)
 
 ENV["JEKYLL_LOG_LEVEL"] = "error"
