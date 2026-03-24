@@ -4,73 +4,8 @@ require "jekyll"
 require "rspec"
 require "pathname"
 
-# Mock RMagick since it may not be installed in test environment
-module Magick
-  class ImageList
-    def initialize(path)
-      @path = path
-      @images = [MockImage.new]
-    end
-
-    def length
-      @images.length
-    end
-
-    def size
-      @images.size
-    end
-
-    def [](index)
-      @images[index]
-    end
-
-    def []=(index, value)
-      @images[index] = value
-    end
-
-    def strip!
-      # Mock strip
-    end
-
-    def copy
-      self.class.new(@path)
-    end
-
-    def resize!(width, height)
-      # Mock resize
-    end
-
-    def modulate(value)
-      MockImage.new
-    end
-
-    def write(path, &block)
-      # Mock write - create empty file
-      FileUtils.mkdir_p(File.dirname(path))
-      File.write(path, "mock image data")
-    end
-
-    def destroy!
-      # Mock destroy
-    end
-  end
-
-  class MockImage
-    def modulate(*args)
-      self
-    end
-  end
-
-  # Mock include
-  def self.include(mod)
-    # No-op
-  end
-end
-
-# Mock the require
-def require(name)
-  super unless name == 'rmagick'
-end
+# Add the mock rmagick to the load path
+$LOAD_PATH.unshift(File.expand_path("support", __dir__))
 
 require File.expand_path("../jekyll-rmagick.rb", __dir__)
 
@@ -117,6 +52,23 @@ RSpec.configure do |config|
   def make_site(overrides = {})
     config = jekyll_config(overrides)
     Jekyll::Site.new(config)
+  end
+
+  # Helper to create a test post
+  def create_post(title: "Test Post", img_src: "sample_image.jpg", content: "Test content", filename: "2024-01-01-test.md")
+    frontmatter = [
+      "---",
+      "layout: default",
+      "title: #{title}"
+    ]
+    frontmatter << "img_src: #{img_src}" unless img_src.nil? # allows for explicitly passing img_src: "" or skipping it entirely
+    frontmatter += [
+      "---",
+      "",
+      content
+    ]
+
+    File.write(source_dir("_posts", filename), frontmatter.join("\n"))
   end
 
   # Clean up test directories before/after tests

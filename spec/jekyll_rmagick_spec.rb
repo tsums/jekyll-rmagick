@@ -63,16 +63,7 @@ describe "Jekyll RMagick Plugin" do
 
     context "when source image file doesn't exist" do
       before(:each) do
-        FileUtils.mkdir_p(source_dir("_posts"))
-        File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-          ---
-          layout: default
-          title: Test Post
-          img_src: nonexistent.png
-          ---
-
-          Test content
-        MARKDOWN
+        create_post(img_src: "nonexistent.png")
       end
 
       it "logs a warning and continues" do
@@ -101,16 +92,7 @@ describe "Jekyll RMagick Plugin" do
       end
 
       before(:each) do
-        FileUtils.mkdir_p(source_dir("_posts"))
-        File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-          ---
-          layout: default
-          title: Test Post
-          img_src: sample_image.jpg
-          ---
-
-          Test content
-        MARKDOWN
+        create_post(img_src: "sample_image.jpg")
       end
 
       it "skips incomplete spec entries" do
@@ -137,15 +119,7 @@ describe "Jekyll RMagick Plugin" do
 
     context "when img_src is not present" do
       before(:each) do
-        FileUtils.mkdir_p(source_dir("_posts"))
-        File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-          ---
-          layout: default
-          title: Test Post
-          ---
-
-          Test content without img_src
-        MARKDOWN
+        create_post(img_src: nil, content: "Test content without img_src")
       end
 
       it "skips processing for posts without img_src" do
@@ -155,16 +129,7 @@ describe "Jekyll RMagick Plugin" do
 
     context "when img_src is empty" do
       before(:each) do
-        FileUtils.mkdir_p(source_dir("_posts"))
-        File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-          ---
-          layout: default
-          title: Test Post
-          img_src:
-          ---
-
-          Test content
-        MARKDOWN
+        create_post(img_src: "")
       end
 
       it "skips processing for empty img_src" do
@@ -189,17 +154,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      # Create test post with valid image
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "generates resized images for all specs" do
@@ -272,16 +227,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "uses custom prefix in post data keys" do
@@ -316,16 +262,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "defaults to 'image' prefix when not specified" do
@@ -352,16 +289,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "applies brightness modulation and creates image" do
@@ -428,16 +356,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "respects custom quality setting" do
@@ -461,39 +380,9 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-
-      # Create first post with image
-      File.write(source_dir("_posts", "2024-01-01-first.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: First Post
-        img_src: sample_image.jpg
-        ---
-
-        First post content
-      MARKDOWN
-
-      # Create second post with different image
-      File.write(source_dir("_posts", "2024-01-02-second.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Second Post
-        img_src: sample_image.jpg
-        ---
-
-        Second post content
-      MARKDOWN
-
-      # Create third post without image
-      File.write(source_dir("_posts", "2024-01-03-third.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Third Post
-        ---
-
-        Third post without image
-      MARKDOWN
+      create_post(title: "First Post", img_src: "sample_image.jpg", filename: "2024-01-01-first.md")
+      create_post(title: "Second Post", img_src: "sample_image.jpg", filename: "2024-01-02-second.md")
+      create_post(title: "Third Post", img_src: nil, filename: "2024-01-03-third.md", content: "Third post without image")
     end
 
     it "processes all posts with images" do
@@ -536,16 +425,7 @@ describe "Jekyll RMagick Plugin" do
     end
 
     before(:each) do
-      FileUtils.mkdir_p(source_dir("_posts"))
-      File.write(source_dir("_posts", "2024-01-01-test.md"), <<~MARKDOWN)
-        ---
-        layout: default
-        title: Test Post
-        img_src: sample_image.jpg
-        ---
-
-        Test content
-      MARKDOWN
+      create_post(img_src: "sample_image.jpg")
     end
 
     it "generates correct filename format with size" do
