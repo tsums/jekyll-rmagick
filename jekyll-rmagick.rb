@@ -87,7 +87,7 @@ module Jekyll
                 FileUtils.mkdir_p dest
 
                 # Process each post
-                site.posts.each do |post|
+                site.posts.docs.each do |post|
                     if post.data['img_src']
                         # Build source file path
                         source_file = File.join(src, post.data['img_src'])
