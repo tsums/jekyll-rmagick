@@ -1,5 +1,7 @@
 # jekyll-rmagick
 
+[![Hypercommit](https://img.shields.io/badge/Hypercommit-DB2475)](https://hypercommit.com/jekyll-rmagick)
+
 A tiny Jekyll plugin to process images using [RMagick](https://rmagick.github.io/)'s ImageMagick bindings.
 
 I made this for my personal blog after I grew tired of manually processing images for the sizes I need. I use this to associate a header image with each post, which is then displayed in different sizes on the index and post pages. This way the source repository need only contain one large master image, and it automates the creation of posts.
