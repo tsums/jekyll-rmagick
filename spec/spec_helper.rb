@@ -4,7 +4,7 @@ require "jekyll"
 require "rspec"
 require "pathname"
 
-require File.expand_path("../jekyll-rmagick.rb", __dir__)
+require File.expand_path("../lib/jekyll-rmagick.rb", __dir__)
 
 ENV["JEKYLL_LOG_LEVEL"] = "error"
 
