@@ -14,7 +14,7 @@ cp jekyll-rmagick.rb YOUR_JEKYLL_DIR/_plugins
 ```
 
 ### Configuration
-Add a `jekyll-rmgaick` section to `_config.yml`.
+Add a `jekyll-rmagick` section to `_config.yml`.
 ```yaml
 jekyll-rmagick:
     source_dir: _img
@@ -37,6 +37,7 @@ Place these under the `jekyll-rmagick` header in config.
 | option | value | desc |
 |--------|-------|------|
 | brightness-mod|0.0-1.0| decrease brightness of images (useful for overlaying text)|
+| quality | 1-100 | image quality for output (default 75) |
 
 ### Usage
 1. Place image file for the post in `source-dir`
