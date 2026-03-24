@@ -1,0 +1,20 @@
+title: Test Site
+description: Test site for jekyll-rmagick
+url: http://example.com
+baseurl: ""
+
+collections:
+  posts:
+    output: true
+    permalink: /:year/:month/:day/:title:output_ext
+
+jekyll-rmagick:
+  source_dir: _img
+  prefix: image
+  spec:
+    - meta: sm
+      width: 640
+      height: 320
+    - meta: md
+      width: 1280
+      height: 800

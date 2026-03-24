@@ -45,26 +45,27 @@ module Jekyll
         # Generates resized versions of images specified in post frontmatter.
         class Generator < Jekyll::Generator
 
-            PATH_FORMAT = "%{filename}-%{size}.%{extension}"
+            PATH_FORMAT = "%{post_slug}-%{prefix}-%{size}.png"
 
             def symbolize_keys(hash)
                 # Converts string keys to symbols for template interpolation
                 hash.transform_keys(&:to_sym)
             end
 
-            def format_output_path(dest, image_path, size)
+            def format_output_path(dest, post_slug, prefix, image_path, size)
                 # Formats the output filename using the path format template
-                params = symbolize_keys(image_hash(image_path, size))
+                params = symbolize_keys(image_hash(post_slug, prefix, image_path, size))
                 Pathname.new(dest % params).to_s
             end
 
-            def image_hash(image_path, size)
+            def image_hash(post_slug, prefix, image_path, size)
                 # Extracts path components for filename generation
                 {
+                  'post_slug' => post_slug,
+                  'prefix'    => prefix,
                   'path'      => image_path,
                   'basename'  => File.basename(image_path),
                   'filename'  => File.basename(image_path, '.*'),
-                  'extension' => File.extname(image_path).delete('.'),
                   'size'      => size,
                 }
             end
@@ -106,7 +107,8 @@ module Jekyll
                                 next unless spec['meta'] && spec['width'] && spec['height']
 
                                 # Build output paths
-                                filename = format_output_path(PATH_FORMAT, source_file, spec['meta'])
+                                post_slug = post.data['slug'] || post.basename.sub(/\A\d{4}-\d{2}-\d{2}-/, '')
+                                filename = format_output_path(PATH_FORMAT, post_slug, prefix, source_file, spec['meta'])
                                 output_file = File.join(dest, filename)
                                 rel_path = File.join('/assets', filename)
 
@@ -115,8 +117,8 @@ module Jekyll
                                 image.resize!(spec['width'], spec['height'])
 
                                 # Apply brightness modulation if configured and valid
-                                if jekyll_rmagick_config['brightness_mod'] && jekyll_rmagick_config['brightness_mod'].is_a?(Numeric) && (0.0..1.0).include?(jekyll_rmagick_config['brightness_mod'])
-                                    image[0] = image[0].modulate(jekyll_rmagick_config['brightness_mod'], 1.0, 1.0) if image.length > 0
+                                if jekyll_rmagick_config['brightness-mod'] && jekyll_rmagick_config['brightness-mod'].is_a?(Numeric) && (0.0..1.0).include?(jekyll_rmagick_config['brightness-mod'])
+                                    image[0] = image[0].modulate(jekyll_rmagick_config['brightness-mod'], 1.0, 1.0) if image.length > 0
                                 end
 
                                 # Write image with specified quality
