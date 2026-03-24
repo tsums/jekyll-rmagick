@@ -92,7 +92,7 @@ module Jekyll
                         # Build source file path
                         source_file = File.join(src, post.data['img_src'])
                         unless File.exist?(source_file)
-                            site.logger.warn "jekyll-rmagick: Source file #{source_file} does not exist"
+                            Jekyll.logger.warn "jekyll-rmagick: Source file #{source_file} does not exist"
                             next
                         end
 
@@ -115,12 +115,12 @@ module Jekyll
                                 image.resize!(spec['width'], spec['height'])
 
                                 # Apply brightness modulation if configured and valid
-                                if jekyll_rmagick_config['brightness-mod'] && jekyll_rmagick_config['brightness-mod'].is_a?(Numeric) && (0.0..1.0).include?(jekyll_rmagick_config['brightness-mod'])
-                                    image.modulate!(jekyll_rmagick_config['brightness-mod'])
+                                if jekyll_rmagick_config['brightness_mod'] && jekyll_rmagick_config['brightness_mod'].is_a?(Numeric) && (0.0..1.0).include?(jekyll_rmagick_config['brightness_mod'])
+                                    image[0] = image[0].modulate(jekyll_rmagick_config['brightness_mod'], 1.0, 1.0) if image.length > 0
                                 end
 
                                 # Write image with specified quality
-                                quality = jekyll_rmagick_config['quality'] || 75
+                                quality = jekyll_rmagick_config['quality'] || 100
                                 image.write(output_file) { self.quality = quality }
 
                                 # Clean up image resources
@@ -134,7 +134,7 @@ module Jekyll
                             end
 
                         rescue => e
-                            site.logger.error "jekyll-rmagick: Failed to process image #{source_file}: #{e.message}"
+                            Jekyll.logger.error "jekyll-rmagick: Failed to process image #{source_file}: #{e.message}"
                             next
                         end
                     end
